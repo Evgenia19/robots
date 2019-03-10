@@ -23,17 +23,20 @@ public class GameVisualizer extends JPanel
         return timer;
     }
     
-    private volatile double m_robotPositionX = 50;
-    private volatile double m_robotPositionY = 50;
-    private volatile double m_robotDirection = 0;
+    private volatile double m_robotPositionX = 320;
+    private volatile double m_robotPositionY = 220;
+    private volatile double m_robotDirection = 1;
 
-    private volatile int m_targetPositionX = 101;
-    private volatile int m_targetPositionY = 150;
+    private volatile int m_targetPositionX = 321;
+    private volatile int m_targetPositionY = 320;
     
-    private static final double maxVelocity = 0.05;
+    private static final double maxVelocity = 0.01;
     private static final double maxAngularVelocity = 0.001;
 
-    private Point[] walls = new Point[]{new Point(85, 85), new Point(100, 150), new Point(300, 300), new Point(400, 310)};
+    private double dist = distance(m_targetPositionX, m_targetPositionY,
+            m_robotPositionX, m_robotPositionY);
+
+    private Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300), new Point(300, 300), new Point(400, 310)};
 
     public GameVisualizer() 
     {
@@ -76,6 +79,8 @@ public class GameVisualizer extends JPanel
         }
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
+        dist = distance(m_targetPositionX, m_targetPositionY,
+                m_robotPositionX, m_robotPositionY);
     }
     
     protected void onRedrawEvent()
@@ -100,12 +105,9 @@ public class GameVisualizer extends JPanel
     
     protected void onModelUpdateEvent()
     {
-        double distance = distance(m_targetPositionX, m_targetPositionY, 
-            m_robotPositionX, m_robotPositionY);
+        double distance = distance(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         if (distance < 0.5)
-        {
             return;
-        }
         double velocity = maxVelocity;
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
@@ -132,34 +134,38 @@ public class GameVisualizer extends JPanel
     
     private void moveRobot(double velocity, double angularVelocity, double duration)
     {
-        velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = m_robotPositionX + velocity / angularVelocity * 
-            (Math.sin(m_robotDirection  + angularVelocity * duration) -
-                Math.sin(m_robotDirection));
+        velocity = applyLimits(velocity, 0, maxVelocity);
+        double newX = m_robotPositionX +
+            (Math.cos(m_robotDirection  + angularVelocity * duration));
         if (!Double.isFinite(newX))
         {
             newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
         }
-        double newY = m_robotPositionY - velocity / angularVelocity * 
-            (Math.cos(m_robotDirection  + angularVelocity * duration) -
-                Math.cos(m_robotDirection));
-        if (!Double.isFinite(newY))
-        {
-            newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
+        double newY = m_robotPositionY +
+            (Math.sin(m_robotDirection  + angularVelocity * duration));
+        if (!Double.isFinite(newY)) {
+              newY = m_robotPositionY + velocity *duration * Math.sin(m_robotDirection);
         }
         if (getWalls(newX, newY))
         {
-            m_robotPositionX = newX - 2*velocity/angularVelocity*Math.cos(m_robotDirection);
-            m_robotPositionY = newY - 2*velocity/angularVelocity*Math.cos(m_robotDirection);
+            if (newX > m_robotPositionX)
+                m_robotPositionX = m_robotPositionX - 15;
+            else
+                m_robotPositionX = m_robotPositionX + 15;
+            if (newY > m_targetPositionY)
+                m_robotPositionY = m_robotPositionY - 15;
+            else
+                m_robotPositionY = m_robotPositionY - 15;
+            m_robotDirection = -m_robotDirection;
         }
         else
         {
             m_robotPositionX = newX;
             m_robotPositionY = newY;
+            double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration);
+            m_robotDirection = newDirection;
         }
-        double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration); 
-        m_robotDirection = newDirection;
     }
 
     private boolean getWalls(double x, double y) {
@@ -202,15 +208,6 @@ public class GameVisualizer extends JPanel
         drawRobot(g2d, round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
         drawTarget(g2d, m_targetPositionX, m_targetPositionY);
     }
-    private static void fillArc(Graphics g, int x, int y, int width, int height)
-    {
-        g.fillArc(x, y, width, height, 1, 1);
-    }
-
-    private static void drawArc(Graphics g, int x, int y, int width, int height)
-    {
-        g.drawArc(x, y, width, height, 1, 1);
-    }
 
     private static void fillRect(Graphics g, int x, int y, int width, int height)
     {
@@ -239,13 +236,13 @@ public class GameVisualizer extends JPanel
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
-        fillOval(g, robotCenterX, robotCenterY, 30, 10);
+        fillOval(g, robotCenterX - 15, robotCenterY, 30, 10);
         g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX, robotCenterY, 30, 10);
+        drawOval(g, robotCenterX - 15, robotCenterY, 30, 10);
         g.setColor(Color.WHITE);
-        fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
+        fillOval(g, robotCenterX - 5, robotCenterY, 5, 5);
         g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
+        drawOval(g, robotCenterX - 5, robotCenterY, 5, 5);
     }
     
     private void drawTarget(Graphics2D g, int x, int y)
