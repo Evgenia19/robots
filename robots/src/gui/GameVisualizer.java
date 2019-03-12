@@ -164,10 +164,18 @@ public class GameVisualizer extends JPanel
         }
         else
         {
-            m_robotPositionX = newX;
-            m_robotPositionY = newY;
-            double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration);
-            m_robotDirection = newDirection;
+            if (getMines(newX, newY))
+            {
+                m_robotPositionX = 10;
+                m_robotPositionY = 10;
+            }
+            else
+                {
+                m_robotPositionX = newX;
+                m_robotPositionY = newY;
+                double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration);
+                m_robotDirection = newDirection;
+            }
         }
     }
 
@@ -179,6 +187,14 @@ public class GameVisualizer extends JPanel
         return false;
     }
 
+    private boolean getMines(double x, double y) {
+        for (int i = 0; i < mines.length; i++)
+        {
+            if (distance(x, y, mines[i].x, mines[i].y) <= 4.5)
+                return true;
+        }
+        return false;
+    }
     private static double asNormalizedRadians(double angle)
     {
         while (angle < 0)
@@ -243,9 +259,9 @@ public class GameVisualizer extends JPanel
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
-        fillOval(g, robotCenterX - 15, robotCenterY, 30, 10);
+        fillOval(g, robotCenterX - 10, robotCenterY, 20, 10);
         g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX - 15, robotCenterY, 30, 10);
+        drawOval(g, robotCenterX - 10, robotCenterY, 20, 10);
         g.setColor(Color.WHITE);
         fillOval(g, robotCenterX - 5, robotCenterY, 5, 5);
         g.setColor(Color.BLACK);
