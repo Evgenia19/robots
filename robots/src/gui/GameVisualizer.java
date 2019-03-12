@@ -30,13 +30,14 @@ public class GameVisualizer extends JPanel
     private volatile int m_targetPositionX = 321;
     private volatile int m_targetPositionY = 320;
     
-    private static final double maxVelocity = 0.01;
+    private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
     private double dist = distance(m_targetPositionX, m_targetPositionY,
             m_robotPositionX, m_robotPositionY);
 
-    private Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300), new Point(300, 300), new Point(400, 310)};
+    private Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300), new Point(300, 300), new Point(400, 310), new Point(400, 200), new Point(410, 310), new Point(200, 200), new Point(310, 210)};
+    private Point[] mines = new Point[]{new Point(100, 100), new Point(190, 190), new Point(145, 145)};
 
     public GameVisualizer() 
     {
@@ -136,28 +137,30 @@ public class GameVisualizer extends JPanel
     {
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
         velocity = applyLimits(velocity, 0, maxVelocity);
-        double newX = m_robotPositionX +
-            (Math.cos(m_robotDirection  + angularVelocity * duration));
+        double newX = m_robotPositionX + velocity / angularVelocity *
+                (Math.sin(m_robotDirection  + angularVelocity * duration) -
+                        Math.sin(m_robotDirection));
         if (!Double.isFinite(newX))
         {
             newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
         }
-        double newY = m_robotPositionY +
-            (Math.sin(m_robotDirection  + angularVelocity * duration));
+        double newY = m_robotPositionY - velocity / angularVelocity *
+                (Math.cos(m_robotDirection  + angularVelocity * duration) -
+                        Math.cos(m_robotDirection));
         if (!Double.isFinite(newY)) {
               newY = m_robotPositionY + velocity *duration * Math.sin(m_robotDirection);
         }
         if (getWalls(newX, newY))
         {
             if (newX > m_robotPositionX)
-                m_robotPositionX = m_robotPositionX - 15;
+                m_robotPositionX = m_robotPositionX - 1;
             else
-                m_robotPositionX = m_robotPositionX + 15;
+                m_robotPositionX = m_robotPositionX + 1;
             if (newY > m_targetPositionY)
-                m_robotPositionY = m_robotPositionY - 15;
+                m_robotPositionY = m_robotPositionY - 1;
             else
-                m_robotPositionY = m_robotPositionY - 15;
-            m_robotDirection = -m_robotDirection;
+                m_robotPositionY = m_robotPositionY - 1;
+            m_robotDirection = m_robotDirection + 0.09;
         }
         else
         {
@@ -205,7 +208,11 @@ public class GameVisualizer extends JPanel
             int height = walls[i+1].y - walls[i].y;
             drawWall(g2d, walls[i].x, walls[i].y, width, height);
         }
-        drawRobot(g2d, round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
+        for(int i = 0; i < mines.length; i++)
+        {
+            drawMine(g2d, mines[i].x, mines[i].y);
+        }
+            drawRobot(g2d, round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
         drawTarget(g2d, m_targetPositionX, m_targetPositionY);
     }
 
@@ -265,4 +272,13 @@ public class GameVisualizer extends JPanel
         drawRect(g, x, y, width, height);
     }
 
+    private void drawMine (Graphics2D g, int x, int y)
+    {
+        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
+        g.setTransform(t);
+        g.setColor(Color.RED);
+        fillOval(g, x, y, 9,9);
+        g.setColor(Color.BLACK);
+        drawOval(g, x, y, 9, 9);
+    }
 }
