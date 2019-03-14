@@ -11,7 +11,7 @@ import java.awt.geom.AffineTransform;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class GameVisualizer extends JPanel
 {
@@ -23,21 +23,23 @@ public class GameVisualizer extends JPanel
         return timer;
     }
     
-    private volatile double m_robotPositionX = 320;
-    private volatile double m_robotPositionY = 220;
-    private volatile double m_robotDirection = 1;
+    public volatile double m_robotPositionX = 320;
+    public volatile double m_robotPositionY = 220;
+    public volatile double m_robotDirection = 1;
 
-    private volatile int m_targetPositionX = 321;
-    private volatile int m_targetPositionY = 320;
+    public volatile int m_targetPositionX = 321;
+    public volatile int m_targetPositionY = 320;
     
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
-    private double dist = distance(m_targetPositionX, m_targetPositionY,
-            m_robotPositionX, m_robotPositionY);
-
-    private Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300), new Point(300, 300), new Point(400, 310), new Point(400, 200), new Point(410, 310), new Point(200, 200), new Point(310, 210)};
-    private Point[] mines = new Point[]{new Point(100, 100), new Point(190, 190), new Point(145, 145)};
+    public Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300),
+            new Point(300, 300), new Point(400, 310), new Point(400, 200), new Point(410, 310),
+            new Point(200, 200), new Point(310, 210), new Point(800, 200), new Point(810, 300),
+            new Point(800, 300), new Point(900, 310), new Point(900, 300), new Point(910, 400),
+            new Point(900, 400), new Point(1000, 410), new Point(600, 800), new Point(700, 810),
+            new Point(300, 700), new Point(310, 800)};
+    public Point[] mines = new Point[]{new Point(100, 100), new Point(190, 190), new Point(145, 145)};
 
     public GameVisualizer() 
     {
@@ -69,7 +71,7 @@ public class GameVisualizer extends JPanel
         setDoubleBuffered(true);
     }
 
-    protected void setTargetPosition(Point p)
+    public void setTargetPosition(Point p)
     {
         for(int i = 0; i < walls.length; i+=2)
         {
@@ -80,8 +82,6 @@ public class GameVisualizer extends JPanel
         }
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
-        dist = distance(m_targetPositionX, m_targetPositionY,
-                m_robotPositionX, m_robotPositionY);
     }
     
     protected void onRedrawEvent()
@@ -107,7 +107,7 @@ public class GameVisualizer extends JPanel
     protected void onModelUpdateEvent()
     {
         double distance = distance(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
-        if (distance < 0.5)
+        if (distance < 0.1)
             return;
         double velocity = maxVelocity;
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
@@ -166,8 +166,14 @@ public class GameVisualizer extends JPanel
         {
             if (getMines(newX, newY))
             {
-                m_robotPositionX = 10;
-                m_robotPositionY = 10;
+                m_targetPositionX = round(newX);
+                m_targetPositionY = round(newY);
+                JOptionPane.showMessageDialog(super.getParent(),
+
+                        "You died",
+
+                        "Game over", JOptionPane.DEFAULT_OPTION);
+
             }
             else
                 {
@@ -179,7 +185,7 @@ public class GameVisualizer extends JPanel
         }
     }
 
-    private boolean getWalls(double x, double y) {
+    public boolean getWalls(double x, double y) {
         for (int i = 0; i < walls.length; i += 2) {
             if (x > walls[i].x & x < walls[i + 1].x & y > walls[i].y & y < walls[i + 1].y)
                 return true;
@@ -187,7 +193,7 @@ public class GameVisualizer extends JPanel
         return false;
     }
 
-    private boolean getMines(double x, double y) {
+    public boolean getMines(double x, double y) {
         for (int i = 0; i < mines.length; i++)
         {
             if (distance(x, y, mines[i].x, mines[i].y) <= 4.5)
@@ -259,9 +265,9 @@ public class GameVisualizer extends JPanel
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
-        fillOval(g, robotCenterX - 10, robotCenterY, 20, 10);
+        fillOval(g, robotCenterX -15, robotCenterY, 30, 10);
         g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX - 10, robotCenterY, 20, 10);
+        drawOval(g, robotCenterX -15, robotCenterY, 30, 10);
         g.setColor(Color.WHITE);
         fillOval(g, robotCenterX - 5, robotCenterY, 5, 5);
         g.setColor(Color.BLACK);
@@ -293,7 +299,7 @@ public class GameVisualizer extends JPanel
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.RED);
-        fillOval(g, x, y, 9,9);
+        fillOval(g, x, y, 10,10);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 9, 9);
     }

@@ -2,8 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class GameWindow extends JInternalFrame
 {
