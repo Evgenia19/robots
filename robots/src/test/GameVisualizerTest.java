@@ -11,7 +11,7 @@ import java.util.Random;
 public class GameVisualizerTest {
 
     @Test
-    public void setTargetPositionTest() {
+    public void setTargetPositionOnWallTest() {
 
         GameVisualizer game = new GameVisualizer();
         int x = game.m_targetPositionX = 10;
@@ -22,25 +22,36 @@ public class GameVisualizerTest {
     }
 
     @Test
+    public void setTargetPositionOnMineTest() {
+
+        GameVisualizer game = new GameVisualizer();
+        int x = game.m_targetPositionX = 90;
+        int y = game.m_targetPositionY = 90;
+        game.setTargetPosition(new Point(145,145));
+        Assert.assertEquals(x , game.m_targetPositionX);
+        Assert.assertEquals(y, game.m_targetPositionY);
+    }
+
+    @Test
     public void testGetWalls() {
         GameVisualizer g = new GameVisualizer();
         ArrayList<Point> points = new ArrayList<>();
         for (int i = 0; i < g.walls.length; i += 2) {
             Random rnd = new Random();
-            int x = g.walls[i].x + rnd.nextInt((int)g.walls[i+1].x - (int)g.walls[i].x);
-            int y = g.walls[i].y + rnd.nextInt((int)g.walls[i+1].y - (int)g.walls[i].y);
+            int x = g.walls[i].x + rnd.nextInt(g.walls[i+1].x - g.walls[i].x - 1);
+            int y = g.walls[i].y + rnd.nextInt(g.walls[i+1].y - g.walls[i].y - 1);
             points.add(new Point(x, y));
         }
         for (Point p: points){
             boolean result = g.getWalls(p.x, p.y);
-            Assert.assertTrue(result);
+            Assert.assertEquals(result, true);
         }
     }
 
     @Test
     public void testGetMines() {
         GameVisualizer g = new GameVisualizer();
-        ArrayList<Point> points = new ArrayList<Point>();
+        ArrayList<Point> points = new ArrayList<>();
         for (int i = 0; i < g.mines.length; i += 1){
             boolean result = g.getMines(g.mines[i].x, g.mines[i].y);
             Assert.assertTrue(result);

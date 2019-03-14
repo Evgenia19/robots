@@ -23,26 +23,28 @@ public class GameVisualizer extends JPanel
         return timer;
     }
     
-    public volatile double m_robotPositionX = 320;
-    public volatile double m_robotPositionY = 220;
-    public volatile double m_robotDirection = 1;
+    public volatile double m_robotPositionX;
+    public volatile double m_robotPositionY;
+    public volatile double m_robotDirection;
 
-    public volatile int m_targetPositionX = 321;
-    public volatile int m_targetPositionY = 320;
+    public volatile int m_targetPositionX;
+    public volatile int m_targetPositionY;
     
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
     public Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300),
             new Point(300, 300), new Point(400, 310), new Point(400, 200), new Point(410, 310),
-            new Point(200, 200), new Point(310, 210), new Point(800, 200), new Point(810, 300),
+            new Point(200, 200), new Point(300, 210), new Point(800, 200), new Point(810, 300),
             new Point(800, 300), new Point(900, 310), new Point(900, 300), new Point(910, 400),
             new Point(900, 400), new Point(1000, 410), new Point(600, 800), new Point(700, 810),
             new Point(300, 700), new Point(310, 800)};
-    public Point[] mines = new Point[]{new Point(100, 100), new Point(190, 190), new Point(145, 145)};
+    public Point[] mines = new Point[]{new Point(15, 600), new Point(590, 790), new Point(145, 145),
+            new Point(800, 183), new Point(1000, 430)};
 
-    public GameVisualizer() 
+    public GameVisualizer()
     {
+        setStartGame();
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -71,6 +73,15 @@ public class GameVisualizer extends JPanel
         setDoubleBuffered(true);
     }
 
+    public void setStartGame()
+    {
+        m_robotPositionX = 320;
+        m_robotPositionY = 220;
+        m_robotDirection = 1;
+        m_targetPositionX = 321;
+        m_targetPositionY = 320;
+    }
+
     public void setTargetPosition(Point p)
     {
         for(int i = 0; i < walls.length; i+=2)
@@ -80,6 +91,9 @@ public class GameVisualizer extends JPanel
                 return;
             }
         }
+        for (int i = 0; i < mines.length; i++)
+            if (distance(p.x, p.y, mines[i].x, mines[i].y) <= 5)
+                return;
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
     }
@@ -100,7 +114,7 @@ public class GameVisualizer extends JPanel
     {
         double diffX = toX - fromX;
         double diffY = toY - fromY;
-        
+
         return asNormalizedRadians(Math.atan2(diffY, diffX));
     }
     
@@ -166,13 +180,17 @@ public class GameVisualizer extends JPanel
         {
             if (getMines(newX, newY))
             {
-                m_targetPositionX = round(newX);
-                m_targetPositionY = round(newY);
-                JOptionPane.showMessageDialog(super.getParent(),
+                int n = JOptionPane.showConfirmDialog(this,
 
                         "You died",
 
                         "Game over", JOptionPane.DEFAULT_OPTION);
+                switch (n)
+                {
+                    case JOptionPane.YES_OPTION: setStartGame(); break;
+                    case JOptionPane.CLOSED_OPTION: setStartGame(); break;
+                    default:
+                }
 
             }
             else
@@ -196,7 +214,7 @@ public class GameVisualizer extends JPanel
     public boolean getMines(double x, double y) {
         for (int i = 0; i < mines.length; i++)
         {
-            if (distance(x, y, mines[i].x, mines[i].y) <= 4.5)
+            if (distance(x, y, mines[i].x, mines[i].y) <= 5)
                 return true;
         }
         return false;
