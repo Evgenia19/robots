@@ -11,7 +11,7 @@ import java.util.Random;
 public class GameVisualizerTest {
 
     @Test
-    public void setTargetPositionOnWallTest() {
+    public void targetPositionOnWallTest() {
 
         GameVisualizer game = new GameVisualizer();
         int x = game.m_targetPositionX = 10;
@@ -22,7 +22,7 @@ public class GameVisualizerTest {
     }
 
     @Test
-    public void setTargetPositionOnMineTest() {
+    public void targetPositionOnMineTest() {
 
         GameVisualizer game = new GameVisualizer();
         int x = game.m_targetPositionX = 90;
@@ -34,36 +34,53 @@ public class GameVisualizerTest {
 
     @Test
     public void testGetWalls() {
-        GameVisualizer g = new GameVisualizer();
+        GameVisualizer game = new GameVisualizer();
         ArrayList<Point> points = new ArrayList<>();
-        for (int i = 0; i < g.walls.length; i += 2) {
+        for (int i = 0; i < game.walls.length; i += 2) {
             Random rnd = new Random();
-            int x = g.walls[i].x + rnd.nextInt(g.walls[i+1].x - g.walls[i].x - 1);
-            int y = g.walls[i].y + rnd.nextInt(g.walls[i+1].y - g.walls[i].y - 1);
+            int x = game.walls[i].x + rnd.nextInt(game.walls[i+1].x - game.walls[i].x);
+            int y = game.walls[i].y + rnd.nextInt(game.walls[i+1].y - game.walls[i].y);
             points.add(new Point(x, y));
         }
         for (Point p: points){
-            boolean result = g.getWalls(p.x, p.y);
-            Assert.assertEquals(result, true);
+            boolean result = game.getWalls(p.x, p.y);
+            Assert.assertTrue(result);
         }
     }
 
     @Test
+    public void conflictWithWalls()
+    {
+        GameVisualizer game = new GameVisualizer();
+        game.m_robotDirection = 1;
+        game.m_robotPositionX = 400;
+        game.m_robotPositionY = 250;
+        game.m_targetPositionX = 412;
+        game.m_targetPositionY = 250;
+        boolean result = game.getWalls(401, 250);
+        game.onModelUpdateEvent();
+        Assert.assertTrue(result);
+        Assert.assertEquals(game.m_robotDirection, 1.09, 0.0001);
+        Assert.assertEquals(game.m_robotPositionX, 399, 0.0001);
+        Assert.assertEquals(game.m_robotPositionY, 250, 0.0001);
+    }
+
+    @Test
     public void testGetMines() {
-        GameVisualizer g = new GameVisualizer();
+        GameVisualizer game = new GameVisualizer();
         ArrayList<Point> points = new ArrayList<>();
-        for (int i = 0; i < g.mines.length; i += 1){
-            boolean result = g.getMines(g.mines[i].x, g.mines[i].y);
+        for (int i = 0; i < game.mines.length; i += 1){
+            boolean result = game.getMines(game.mines[i].x, game.mines[i].y);
             Assert.assertTrue(result);
             Random rnd = new Random();
             int x = rnd.nextInt(900);
             int y = rnd.nextInt(900);
-            if (x != g.mines[i].x & y != g.mines[i].y){
+            if (x != game.mines[i].x & y != game.mines[i].y){
                 points.add(new Point(x, y));
             }
         }
         for (Point p: points){
-            boolean result = g.getMines(p.x, p.y);
+            boolean result = game.getMines(p.x, p.y);
             Assert.assertFalse(result);
         }
     }

@@ -118,7 +118,7 @@ public class GameVisualizer extends JPanel
         return asNormalizedRadians(Math.atan2(diffY, diffX));
     }
     
-    protected void onModelUpdateEvent()
+    public void onModelUpdateEvent()
     {
         double distance = distance(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         if (distance < 0.1)
@@ -170,10 +170,6 @@ public class GameVisualizer extends JPanel
                 m_robotPositionX = m_robotPositionX - 1;
             else
                 m_robotPositionX = m_robotPositionX + 1;
-            if (newY > m_targetPositionY)
-                m_robotPositionY = m_robotPositionY - 1;
-            else
-                m_robotPositionY = m_robotPositionY - 1;
             m_robotDirection = m_robotDirection + 0.09;
         }
         else
@@ -205,7 +201,7 @@ public class GameVisualizer extends JPanel
 
     public boolean getWalls(double x, double y) {
         for (int i = 0; i < walls.length; i += 2) {
-            if (x > walls[i].x & x < walls[i + 1].x & y > walls[i].y & y < walls[i + 1].y)
+            if (x >= walls[i].x & x <= walls[i + 1].x & y >= walls[i].y & y <= walls[i + 1].y)
                 return true;
         }
         return false;
@@ -283,9 +279,9 @@ public class GameVisualizer extends JPanel
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
-        fillOval(g, robotCenterX -15, robotCenterY, 30, 10);
+        fillOval(g, robotCenterX -12, robotCenterY, 24, 10);
         g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX -15, robotCenterY, 30, 10);
+        drawOval(g, robotCenterX -12, robotCenterY, 24, 10);
         g.setColor(Color.WHITE);
         fillOval(g, robotCenterX - 5, robotCenterY, 5, 5);
         g.setColor(Color.BLACK);
