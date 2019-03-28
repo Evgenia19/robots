@@ -3,6 +3,9 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.EventHandler;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -24,9 +27,13 @@ import log.Logger;
  */
 public class MainApplicationFrame extends JFrame
 {
+    private GameWindow gameWindow;
+    private String userId;
+
     private final JDesktopPane desktopPane = new JDesktopPane();
     
-    public MainApplicationFrame() {
+    public MainApplicationFrame(String id) {
+        userId = id;
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;        
@@ -41,7 +48,7 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        gameWindow = new GameWindow(id);
         gameWindow.setSize(1200,  1000);
         addWindow(gameWindow);
 

@@ -13,6 +13,8 @@ import java.util.TimerTask;
 
 import javax.swing.*;
 
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
+
 public class GameVisualizer extends JPanel
 {
     private final Timer m_timer = initTimer();
@@ -33,6 +35,7 @@ public class GameVisualizer extends JPanel
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
+
     public Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300),
             new Point(300, 300), new Point(400, 310), new Point(400, 200), new Point(410, 310),
             new Point(200, 200), new Point(300, 210), new Point(800, 200), new Point(810, 300),
@@ -42,8 +45,11 @@ public class GameVisualizer extends JPanel
     public Point[] mines = new Point[]{new Point(15, 600), new Point(590, 790), new Point(145, 145),
             new Point(800, 183), new Point(1000, 430)};
 
-    public GameVisualizer()
+    String userId;
+
+    public GameVisualizer(String id)
     {
+        userId = id;
         setStartGame();
         m_timer.schedule(new TimerTask()
         {
@@ -61,13 +67,11 @@ public class GameVisualizer extends JPanel
                 onModelUpdateEvent();
             }
         }, 0, 10);
-        addMouseListener(new MouseAdapter()
-        {
+        addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                setTargetPosition(e.getPoint());
-                repaint();
+            public void mouseClicked(MouseEvent e) {
+               Main.setTarget(e.getPoint(), userId);
+               repaint();
             }
         });
         setDoubleBuffered(true);

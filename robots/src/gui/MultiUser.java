@@ -1,23 +1,24 @@
 package gui;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MultiUser {
-    private Map<String, RobotsProgram> games;
+    private Map<String, RobotsProgram> bots;
 
     public MultiUser() {
-        games = new HashMap<String, RobotsProgram>();
+        bots = new HashMap<String, RobotsProgram>();
     }
 
-    public User users(User user) {
-        RobotsProgram handler = games.get(user.userId);
-        return handler.process(user);
+    public Message users(Message msg) {
+        RobotsProgram handler = bots.get(msg.userId);
+        return handler.process(msg);
     }
 
     public boolean addUser(String id) {
-        if (!games.containsKey(id)) {
-            games.put(id, new RobotsProgram(id));
+        if (!bots.containsKey(id)) {
+            bots.put(id, new RobotsProgram(id));
             return true;
         }
         else
