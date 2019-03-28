@@ -5,13 +5,14 @@ import java.util.Scanner;
 
 public class Main {
     static Point target = new Point(321, 320);
+    static String userId;
 
     public static void setTarget(Point point, String id)
     {
         target = point;
+        userId = id;
     }
     public static void main(String[] args) {
-        String userId = null;
         MultiUser multiUser = new MultiUser();
         Scanner input = new Scanner(System.in);
         System.out.println("Please, choose your userId");

@@ -29,20 +29,20 @@ public class GameVisualizer extends JPanel
     public volatile double m_robotPositionY;
     public volatile double m_robotDirection;
 
-    public volatile int m_targetPositionX;
-    public volatile int m_targetPositionY;
+    public static volatile int m_targetPositionX;
+    public static volatile int m_targetPositionY;
     
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
 
-    public Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300),
+    public static Point[] walls = new Point[]{new Point(300, 200), new Point(310, 300),
             new Point(300, 300), new Point(400, 310), new Point(400, 200), new Point(410, 310),
             new Point(200, 200), new Point(300, 210), new Point(800, 200), new Point(810, 300),
             new Point(800, 300), new Point(900, 310), new Point(900, 300), new Point(910, 400),
             new Point(900, 400), new Point(1000, 410), new Point(600, 800), new Point(700, 810),
             new Point(300, 700), new Point(310, 800)};
-    public Point[] mines = new Point[]{new Point(15, 600), new Point(590, 790), new Point(145, 145),
+    public static Point[] mines = new Point[]{new Point(15, 600), new Point(590, 790), new Point(145, 145),
             new Point(800, 183), new Point(1000, 430)};
 
     String userId;
@@ -86,7 +86,7 @@ public class GameVisualizer extends JPanel
         m_targetPositionY = 320;
     }
 
-    public void setTargetPosition(Point p)
+    public static void setTargetPosition(Point p)
     {
         for(int i = 0; i < walls.length; i+=2)
         {
