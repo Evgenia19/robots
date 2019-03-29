@@ -24,4 +24,9 @@ public class MultiUser {
         else
             return false;
     }
+
+    public RobotsProgram getRobot(String id)
+    {
+        return bots.get(id);
+    }
 }

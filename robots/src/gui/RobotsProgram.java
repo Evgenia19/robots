@@ -1,11 +1,6 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.EventHandler;
-import java.util.Scanner;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -23,12 +18,12 @@ public class RobotsProgram
         } catch (Exception e) {
             e.printStackTrace();
         }
-            SwingUtilities.invokeLater(() -> {
-                MainApplicationFrame frame = new MainApplicationFrame(userId);
-                frame.pack();
-                frame.setVisible(true);
-                frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-            });
+        SwingUtilities.invokeLater(() -> {
+            MainApplicationFrame frame = new MainApplicationFrame(userId);
+            frame.pack();
+            frame.setVisible(true);
+            frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+        });
     }
 
     public Message process(Message msg)
@@ -37,4 +32,8 @@ public class RobotsProgram
         return new Message(userId, msg.content);
     }
 
+    public Point getTarget()
+    {
+        return new Point(GameVisualizer.m_targetPositionX, GameVisualizer.m_targetPositionY);
+    }
 }
