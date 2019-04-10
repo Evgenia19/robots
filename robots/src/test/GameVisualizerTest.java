@@ -13,7 +13,7 @@ public class GameVisualizerTest {
     @Test
     public void targetPositionOnWallTest() {
 
-        GameVisualizer game = new GameVisualizer("12");
+        GameVisualizer game = new GameVisualizer();
         int x = game.m_targetPositionX = 10;
         int y = game.m_targetPositionY = 10;
         game.setTargetPosition(new Point(305, 250));
@@ -24,7 +24,7 @@ public class GameVisualizerTest {
     @Test
     public void targetPositionOnMineTest() {
 
-        GameVisualizer game = new GameVisualizer("12");
+        GameVisualizer game = new GameVisualizer();
         int x = game.m_targetPositionX = 90;
         int y = game.m_targetPositionY = 90;
         game.setTargetPosition(new Point(145,145));
@@ -34,7 +34,7 @@ public class GameVisualizerTest {
 
     @Test
     public void testGetWalls() {
-        GameVisualizer game = new GameVisualizer("12");
+        GameVisualizer game = new GameVisualizer();
         ArrayList<Point> points = new ArrayList<>();
         for (int i = 0; i < game.walls.length; i += 2) {
             Random rnd = new Random();
@@ -51,7 +51,7 @@ public class GameVisualizerTest {
     @Test
     public void conflictWithWalls()
     {
-        GameVisualizer game = new GameVisualizer("12");
+        GameVisualizer game = new GameVisualizer();
         game.m_robotDirection = 1;
         game.m_robotPositionX = 400;
         game.m_robotPositionY = 250;
@@ -67,7 +67,7 @@ public class GameVisualizerTest {
 
     @Test
     public void testGetMines() {
-        GameVisualizer game = new GameVisualizer("12");
+        GameVisualizer game = new GameVisualizer();
         ArrayList<Point> points = new ArrayList<>();
         for (int i = 0; i < game.mines.length; i += 1){
             boolean result = game.getMines(game.mines[i].x, game.mines[i].y);

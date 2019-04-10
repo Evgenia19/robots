@@ -32,8 +32,7 @@ public class MainApplicationFrame extends JFrame
 
     private final JDesktopPane desktopPane = new JDesktopPane();
     
-    public MainApplicationFrame(String id) {
-        userId = id;
+    public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;        
@@ -48,7 +47,7 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        gameWindow = new GameWindow(id);
+        gameWindow = new GameWindow();
         gameWindow.setSize(1200,  1000);
         addWindow(gameWindow);
 

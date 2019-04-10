@@ -28,8 +28,8 @@ public class GameVisualizer extends JPanel
     public volatile double m_robotPositionY;
     public volatile double m_robotDirection;
 
-    public static volatile int m_targetPositionX;
-    public static volatile int m_targetPositionY;
+    public volatile int m_targetPositionX;
+    public volatile int m_targetPositionY;
 
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
@@ -44,11 +44,9 @@ public class GameVisualizer extends JPanel
     public static Point[] mines = new Point[]{new Point(15, 600), new Point(590, 790), new Point(145, 145),
             new Point(800, 183), new Point(1000, 430)};
 
-    String userId;
 
-    public GameVisualizer(String id)
+    public GameVisualizer()
     {
-        userId = id;
         setStartGame();
         m_timer.schedule(new TimerTask()
         {
@@ -69,7 +67,7 @@ public class GameVisualizer extends JPanel
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Main.setTarget(e.getPoint(), userId);
+                setTargetPosition(e.getPoint());
                 repaint();
             }
         });
@@ -85,7 +83,7 @@ public class GameVisualizer extends JPanel
         m_targetPositionY = 320;
     }
 
-    public static void setTargetPosition(Point p)
+    public void setTargetPosition(Point p)
     {
         for(int i = 0; i < walls.length; i+=2)
         {

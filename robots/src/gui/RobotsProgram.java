@@ -7,9 +7,7 @@ import javax.swing.UIManager;
 
 public class RobotsProgram
 {
-    private String userId;
-    public RobotsProgram(String id) {
-        userId = id;
+    public RobotsProgram(){
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //          UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -19,21 +17,10 @@ public class RobotsProgram
             e.printStackTrace();
         }
         SwingUtilities.invokeLater(() -> {
-            MainApplicationFrame frame = new MainApplicationFrame(userId);
+            MainApplicationFrame frame = new MainApplicationFrame();
             frame.pack();
             frame.setVisible(true);
             frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         });
-    }
-
-    public Message process(Message msg)
-    {
-        GameVisualizer.setTargetPosition(msg.content);
-        return new Message(userId, msg.content);
-    }
-
-    public Point getTarget()
-    {
-        return new Point(GameVisualizer.m_targetPositionX, GameVisualizer.m_targetPositionY);
     }
 }
