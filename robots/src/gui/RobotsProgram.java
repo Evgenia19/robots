@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 
 public class RobotsProgram
 {
+    public MainApplicationFrame frame;
     public RobotsProgram(){
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -17,7 +18,7 @@ public class RobotsProgram
             e.printStackTrace();
         }
         SwingUtilities.invokeLater(() -> {
-            MainApplicationFrame frame = new MainApplicationFrame();
+            frame = new MainApplicationFrame();
             frame.pack();
             frame.setVisible(true);
             frame.setExtendedState(Frame.MAXIMIZED_BOTH);

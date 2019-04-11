@@ -1,6 +1,8 @@
 package gui;
 
+import javax.swing.*;
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MyServer implements Runnable {
@@ -19,21 +21,29 @@ public class MyServer implements Runnable {
             DataOutputStream out = new DataOutputStream(clientDialog.getOutputStream());
             DataInputStream in = new DataInputStream(clientDialog.getInputStream());
             while (!clientDialog.isClosed()) {
-                RobotsProgram program = new RobotsProgram();
                 System.out.println("Server start game");
-                String entry = in.readUTF();
+                RobotsProgram program = new RobotsProgram();
+                try {
+                    String entry = in.readUTF();
 
-                if (entry.equalsIgnoreCase("quit")) {
-                    System.out.println("Client initialize connections suicide ...");
+
+                    if (entry.equalsIgnoreCase("quit")) {
+                        System.out.println("Client initialize connections suicide ...");
+                        out.writeUTF("Server reply - " + entry + " - OK");
+                        Thread.sleep(3000);
+                        break;
+                    }
+
+                    System.out.println("Server try writing to channel");
                     out.writeUTF("Server reply - " + entry + " - OK");
-                    Thread.sleep(3000);
+                    System.out.println("Server Wrote message to clientDialog.");
+                    out.flush();
+                }
+                catch (IOException e)
+                {
+                    program.frame.dispose();
                     break;
                 }
-
-                System.out.println("Server try writing to channel");
-                out.writeUTF("Server reply - " + entry + " - OK");
-                System.out.println("Server Wrote message to clientDialog.");
-                out.flush();
             }
 
             System.out.println("Client disconnected");

@@ -23,7 +23,7 @@ public class MyClient2 {
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        
+
         OutputStream out = null;
         try {
             out = socket.getOutputStream();
